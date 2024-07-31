@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Proxy Extension</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    label, input, button { display: block; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Proxy Settings</h1>
+  <label for="host">Proxy Host:</label>
+  <input type="text" id="host" placeholder="e.g., 192.168.1.1">
+  <label for="port">Proxy Port:</label>
+  <input type="text" id="port" placeholder="e.g., 8080">
+  <button id="setProxy">Set Proxy</button>
+  <button id="autoProxy">Auto Set Proxy</button>
+  <button id="offProxy">Turn Off Proxy</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
