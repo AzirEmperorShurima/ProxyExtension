@@ -11,9 +11,13 @@
     "permissions": [
         "proxy",
         "tabs",
+        "webRequest",
+        "webRequestBlocking",
         "storage",
         "declarativeNetRequest",
-        "declarativeNetRequestWithHostAccess"
+        "declarativeNetRequestWithHostAccess",
+        "<all_urls>",
+        "*://*/*"
     ],
     "background": {
         "service_worker": "background.js"

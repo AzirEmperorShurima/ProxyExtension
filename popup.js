@@ -1,54 +1,18 @@
-// document.getElementById('setProxy').addEventListener('click', () => {
-//     const host = document.getElementById('host').value || 'default-proxy-host';
-//     const port = document.getElementById('port').value || 'default-proxy-port';
-//     const scheme = 'https'; // Chỉ sử dụng HTTPS cho proxy
 
-//     chrome.runtime.sendMessage({ type: 'setProxy', host, port, scheme }, (response) => {
-//         alert(response.status + " " + response.type);
-//     });
+// Lấy phần tử checkbox
+// const toggleButton = document.getElementById('toggleButton');
+
+// // Tải trạng thái từ chrome.storage
+// chrome.storage.local.get('autoCloseEnabled', function (result) {
+//     toggleButton.checked = result.autoCloseEnabled !== false;
 // });
 
-// document.getElementById('autoSetProxy').addEventListener('click', () => {
-//     const proxies = [
-//         { host: '192.168.1.1', port: '8080', scheme: 'https' },
-//         { host: '182.168.1.1', port: '8081', scheme: 'https' },
-//         { host: '172.168.1.1', port: '8082', scheme: 'https' }
-//     ];
-
-//     const randomProxy = proxies[Math.floor(Math.random() * proxies.length)];
-
-//     chrome.runtime.sendMessage({ type: 'setProxy', host: randomProxy.host, port: randomProxy.port, scheme: randomProxy.scheme }, (response) => {
-//         alert(response.status + randomProxy);
-//     });
+// // Lắng nghe sự thay đổi trạng thái
+// toggleButton.addEventListener('change', function () {
+//     chrome.storage.local.set({ autoCloseEnabled: toggleButton.checked });
 // });
 
-// document.getElementById('offProxy').addEventListener('click', () => {
-//     chrome.runtime.sendMessage({ type: 'offProxy' }, (response) => {
-//         alert(response.status + " " + response.type);
-//     });
-// });
-
-// document.getElementById('setProxy').addEventListener('click', () => {
-//     const host = document.getElementById('host').value;
-//     const port = document.getElementById('port').value;
-
-//     chrome.runtime.sendMessage({ type: 'setProxy', host, port }, (response) => {
-//         alert(response.status);
-//     });
-// });
-
-// document.getElementById('autoProxy').addEventListener('click', () => {
-//     chrome.runtime.sendMessage({ type: 'autoProxy' }, (response) => {
-//         alert(response.status);
-//     });
-// });
-
-// document.getElementById('offProxy').addEventListener('click', () => {
-//     chrome.runtime.sendMessage({ type: 'offProxy' }, (response) => {
-//         alert(response.status);
-//     });
-// });
-
+// Thiết lập proxy từ input
 document.getElementById('setProxy').addEventListener('click', () => {
     const host = document.getElementById('host').value;
     const port = document.getElementById('port').value;
@@ -62,7 +26,39 @@ document.getElementById('setProxy').addEventListener('click', () => {
         }
     });
 });
+const proxyList = document.getElementById('proxyList');
+chrome.runtime.sendMessage({ type: 'getProxy' }, (response) => {
+    if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+        return;
+    }
+    const proxiesList = response.proxies;
 
+    proxiesList.forEach((proxy, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${proxy.host}:${proxy.port}`;
+        proxyList.appendChild(option);
+    });
+
+});
+proxyList.addEventListener('change', function () {
+
+    const selectedIndex = proxyList.value;
+    if (selectedIndex !== "") {
+        chrome.runtime.sendMessage({ type: 'getProxies', index: parseInt(selectedIndex) }, (response) => {
+            if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError);
+                return;
+            }
+
+            const { host, port } = response.proxy;
+            document.getElementById('host').value = host;
+            document.getElementById('port').value = port;
+        });
+    }
+});
+// Thiết lập proxy tự động
 document.getElementById('autoProxy').addEventListener('click', () => {
     chrome.runtime.sendMessage({ type: 'autoProxy' }, (response) => {
         if (chrome.runtime.lastError) {
@@ -74,6 +70,7 @@ document.getElementById('autoProxy').addEventListener('click', () => {
     });
 });
 
+// Tắt proxy
 document.getElementById('offProxy').addEventListener('click', () => {
     chrome.runtime.sendMessage({ type: 'offProxy' }, (response) => {
         if (chrome.runtime.lastError) {
@@ -82,5 +79,21 @@ document.getElementById('offProxy').addEventListener('click', () => {
         } else {
             alert(response.status);
         }
+    });
+});
+
+// Lấy dữ liệu từ chrome.storage.local
+chrome.storage.local.get('autoCloseEnabled', (result) => {
+    const checkBtn = document.getElementById('AutoERRHandle');
+    const statusAuto = document.getElementById('statusAuto');
+    if (result.autoCloseEnabled) {
+        checkBtn.checked = true;
+        statusAuto.textContent = 'Auto Close Tab Error is ON';
+    } else {
+        checkBtn.checked = false;
+        statusAuto.textContent = 'Auto Close Tab Error is OFF';
+    }
+    checkBtn.addEventListener('change', function () {
+        chrome.storage.local.set({ autoCloseEnabled: checkBtn.checked });
     });
 });

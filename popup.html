@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Proxy Extension</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    label, input, button { display: block; margin-bottom: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    label,
+    input,
+    button,
+    select {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    #toggleButton {
+      margin-top: 20px;
+    }
   </style>
 </head>
+
 <body>
   <h1>Proxy Settings</h1>
   <label for="host">Proxy Host:</label>
+
   <input type="text" id="host" placeholder="e.g., 192.168.1.1">
   <label for="port">Proxy Port:</label>
   <input type="text" id="port" placeholder="e.g., 8080">
+  <label for="proxySelect">Select Proxy:</label>
+  <select id="proxyList">
+    <option value="" disabled>Select a proxy</option>
+  </select>
   <button id="setProxy">Set Proxy</button>
   <button id="autoProxy">Auto Set Proxy</button>
   <button id="offProxy">Turn Off Proxy</button>
-
+  <p>Auto close Tabs on error:</p>
+  <label>
+    <input type="checkbox" id="AutoERRHandle">
+    <label id="statusAuto"></label>
+  </label>
   <script src="popup.js"></script>
 </body>
+
 </html>
